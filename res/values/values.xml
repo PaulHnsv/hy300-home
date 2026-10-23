@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HY Home</string>
+
+    <color name="bg">#FF0E1116</color>
+    <color name="tile">#FF1B2029</color>
+    <color name="tile_focus">#FF2A3242</color>
+    <color name="accent">#FF4FA3FF</color>
+    <color name="text">#FFE8ECF2</color>
+    <color name="text_dim">#FF8A93A3</color>
+
+    <style name="HomeTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDisablePreview">false</item>
+        <item name="android:colorAccent">@color/accent</item>
+    </style>
+</resources>
