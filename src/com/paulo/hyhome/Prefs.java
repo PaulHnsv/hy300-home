@@ -29,6 +29,15 @@ final class Prefs {
         sp.edit().putString(FAVORITES, TextUtils.join("\n", keys)).apply();
     }
 
+    /** Favoritos padrão são criados uma única vez; depois a escolha é do usuário. */
+    boolean favoritesSeeded() {
+        return sp.getBoolean("seeded", false);
+    }
+
+    void markFavoritesSeeded() {
+        sp.edit().putBoolean("seeded", true).apply();
+    }
+
     Set<String> hidden() {
         return new HashSet<>(sp.getStringSet(HIDDEN, new HashSet<>()));
     }

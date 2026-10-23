@@ -24,7 +24,15 @@ final class AppStore {
         collect(pm, Intent.CATEGORY_LAUNCHER, false, byPackage);
         byPackage.remove(context.getPackageName());
 
-        List<AppEntry> apps = new ArrayList<>(byPackage.values());
+        // Apps de pacotes diferentes com o mesmo nome (ex.: dois "Configurações"):
+        // fica o que tem atividade de TV; se empatar, o primeiro encontrado.
+        Map<String, AppEntry> byLabel = new LinkedHashMap<>();
+        for (AppEntry a : byPackage.values()) {
+            String k = a.label.toLowerCase(Locale.ROOT);
+            AppEntry prev = byLabel.get(k);
+            if (prev == null || (a.leanback && !prev.leanback)) byLabel.put(k, a);
+        }
+        List<AppEntry> apps = new ArrayList<>(byLabel.values());
         final Collator collator = Collator.getInstance(new Locale("pt", "BR"));
         collator.setStrength(Collator.PRIMARY);
         Collections.sort(apps, (a, b) -> collator.compare(a.label, b.label));

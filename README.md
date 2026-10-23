@@ -4,7 +4,9 @@ Launcher leve, sem rede e sem anúncios para o projetor **HY300-T** (Amlogic T95
 tela 800×480, ~1 GB de RAM). Feito para controle remoto (D-pad).
 
 - Grade de apps com favoritos e apps ocultos (segure OK sobre um app).
-- Atalhos do projetor: Keystone, Projeção, HDMI, Wi-Fi, Bluetooth, Ajustes.
+- Na primeira abertura favorita SmartTube, MX Player, Netflix, Prime Video e AirPin, se instalados.
+- Apps de pacotes diferentes com o mesmo nome (ex.: dois "Configurações") aparecem uma vez só.
+- Atalhos do projetor: Keystone, Projeção, HDMI, Wi-Fi, Bluetooth, Ajustes e Limpar RAM.
 - Cabeçalho com rede, RAM livre e temperatura do SoC.
 - Libera processos em segundo plano de outros apps antes de abrir um (o aparelho tem pouca RAM).
 - Não pede INTERNET. Só `ACCESS_NETWORK_STATE` e `KILL_BACKGROUND_PROCESSES`.

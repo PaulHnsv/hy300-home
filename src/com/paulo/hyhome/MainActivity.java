@@ -175,7 +175,38 @@ public final class MainActivity extends Activity {
 
     private void reload() {
         apps = AppStore.load(this);
+        seedFavorites();
         render();
+    }
+
+    /** Na primeira abertura, favorita os apps de vídeo que estiverem instalados. */
+    private void seedFavorites() {
+        if (prefs.favoritesSeeded() || apps.isEmpty()) return;
+        String[] wanted = {"org.smarttube.stable", "com.mxtech.videoplayer.ad", "com.netflix.mediaclient",
+                "com.amazon.avod.thirdpartyclient", "com.waxrain.airplayer2"};
+        List<String> favs = new ArrayList<>();
+        for (String pkg : wanted)
+            for (AppEntry a : apps)
+                if (a.info.packageName.equals(pkg)) { favs.add(a.key); break; }
+        prefs.setFavorites(favs);
+        prefs.markFavoritesSeeded();
+    }
+
+    /** Atalho "Limpar RAM": encerra processos de fundo e mostra quanto ficou livre. */
+    private void cleanMemory() {
+        final ActivityManager am = getSystemService(ActivityManager.class);
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+        final long before = mi.availMem >> 20;
+        freeMemory(null);
+        main.postDelayed(() -> {
+            ActivityManager.MemoryInfo m = new ActivityManager.MemoryInfo();
+            am.getMemoryInfo(m);
+            long after = m.availMem >> 20;
+            Toast.makeText(this, "RAM livre: " + after + " MB (" + (after >= before ? "+" : "") + (after - before) + ")",
+                    Toast.LENGTH_LONG).show();
+            updateStatus();
+        }, 1200);
     }
 
     private void render() {
@@ -187,7 +218,8 @@ public final class MainActivity extends Activity {
         content.addView(sectionTitle("Projetor"));
         LinearLayout row = new LinearLayout(this);
         row.setClipChildren(false);
-        int scW = (getResources().getDisplayMetrics().widthPixels - Ui.dp(this, 48)) / 6 - Ui.dp(this, 12);
+        int scW = (getResources().getDisplayMetrics().widthPixels - Ui.dp(this, 48)) / (Shortcuts.all().size() + 1)
+                - Ui.dp(this, 12);
         for (final Shortcuts.Item s : Shortcuts.all()) {
             Tile t = new Tile(this, scW, shortcutH);
             t.setTag("sc:" + s.label);
@@ -198,6 +230,14 @@ public final class MainActivity extends Activity {
             t.setOnClickListener(v -> launch(s.intent, null));
             row.addView(t, t.rowParams());
         }
+        Tile mem = new Tile(this, scW, shortcutH);
+        mem.setTag("sc:ram");
+        mem.image.setImageResource(R.drawable.sc_memory);
+        mem.image.setColorFilter(getColor(R.color.accent), PorterDuff.Mode.SRC_IN);
+        mem.image.setPadding(0, Ui.dp(this, 6), 0, 0);
+        mem.label.setText("Limpar RAM");
+        mem.setOnClickListener(v -> cleanMemory());
+        row.addView(mem, mem.rowParams());
         content.addView(row);
 
         Map<String, AppEntry> byKey = new HashMap<>();
