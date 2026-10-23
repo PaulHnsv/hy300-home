@@ -62,18 +62,25 @@ HY Home. Sem FLauncher, ajuste o HOME manualmente depois.
 
 ## Controle remoto pelo PC (sem cabo)
 
-`tools/remote/hy300_remote.py` é um controle com D-pad, volume, atalhos de apps, digitar texto,
-captura de tela e status (RAM e temperatura). Só precisa de Python 3 (com tkinter) e do `adb`.
+`tools/remote/hy300_remote.py` controla o projetor pelo Wi-Fi, com o mesmo visual do HY Home. Só
+precisa de Python 3 (com tkinter) e do `adb` no PATH. Nenhum app extra no projetor.
 
 ```bash
 python tools/remote/hy300_remote.py 192.168.0.15:5555
 ```
 
+- D-pad circular, voltar, início, menu, volume e mudo. Segurar uma seta ou o volume repete.
+- Atalhos de apps (SmartTube, Netflix, MX Player, Keystone, TV Bro, HY Home).
+- Digitar texto, captura de tela (salva em `Pictures\HY300`), limpar RAM, espelhar, reiniciar e
+  manter a janela no topo (botão "Mais").
+- Mostra a conexão (verde, âmbar ou vermelho), a RAM livre e a temperatura (âmbar a partir de 80 °C).
 - Teclado: setas, Enter (OK), Esc/Backspace (voltar), Home, PageUp/PageDown (volume), Espaço (play).
-- O PC precisa estar autorizado no ADB do projetor (aceite a chave uma vez, ou use `adb connect`).
-- "Espelhar" usa o [scrcpy](https://github.com/Genymobile/scrcpy), opcional: instale-o à parte e
-  ele aparece no PATH.
+- Teclas seguidas vão em uma única chamada ao `adb`, em ordem. Se o projetor sumir, reconecta com
+  espera crescente. Os erros dizem a causa: `adb` ausente, chave não aceita ou aparelho offline.
+- Opcional: `hy300_remote.json` ao lado do script, com `{"device": "ip:porta", "apps": [["Nome",
+  "pacote ou pacote/atividade", "#cor", "letra"]]}`.
 - "Digitar texto" aceita só ASCII, limite do `input text` do Android.
+- "Espelhar" usa o [scrcpy](https://github.com/Genymobile/scrcpy), opcional e instalado à parte.
 - Segurança: o ADB sobre Wi-Fi dá controle total. Mantenha `ro.adb.secure=1` e use só em rede confiável.
 
 ## Estrutura
