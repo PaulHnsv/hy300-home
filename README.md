@@ -115,6 +115,24 @@ Teste do protocolo no PC (usa a chave do `adb` do PC, sem pedir autorização no
 phone/test/run.sh 192.168.0.15:5555
 ```
 
+## Reaplicar a fase 1 depois de um reset
+
+As mudanças de `/system` (scripts do fabricante neutralizados, `hosts`, `ro.adb.secure=1`) ficam no
+overlay do aparelho, dentro do `userdata`. Um reset de fábrica as apaga. Para refazer e conferir:
+
+```bash
+scripts/phase1/verify.sh                 # SÓ LEITURA: confere o estado atual (exit 0 = tudo certo)
+scripts/phase1/reapply.sh                # simulação: mostra o que faria, não altera nada
+scripts/phase1/reapply.sh --apply        # aplica; depois reinicie o projetor e rode verify.sh
+scripts/phase1/selftest.sh <pasta>       # offline: confere as transformações com os arquivos originais
+```
+
+O `reapply.sh` confere tudo em leitura antes de gravar e **aborta sem mudar nada** se o aparelho não for
+o HY300-T, se um arquivo não tiver o SHA-256 do original (firmware diferente) ou se a chave ADB do PC
+(`~/.android/adbkey.pub`) não existir, porque sem ela `ro.adb.secure=1` trancaria você fora.
+Ele **não** reaplica os arquivos de `vendor`/`product` do overlay, que são de 18/04/2026 e vieram da
+personalização remota do fabricante.
+
 ## Estrutura
 
 ```
@@ -124,6 +142,7 @@ src/com/paulo/hyhome/     MainActivity (tela), AppStore (lista), Shortcuts (atal
                           IconLoader, Prefs, Tile, Ui
 build.sh                  compilação sem Gradle
 scripts/install.sh        instalação e rollback via ADB
+scripts/phase1/           reaplicar e verificar a fase 1 (reapply, verify, selftest)
 tools/remote/             controle remoto do projetor pelo PC (Python/tkinter)
 phone/                    app HY Remote para o celular (cliente ADB) e teste de protocolo
 docs/                     guia de engenharia reversa do HY300-T

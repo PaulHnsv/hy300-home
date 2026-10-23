@@ -155,6 +155,18 @@ servidos pelo mesmo domínio do conteúdo (por exemplo, dentro do app do YouTube
 **Brave no Android não aceita extensões.** O bloqueio dele é embutido (Shields). Para YouTube sem
 anúncios em TV, o SmartTube resolve melhor que um navegador.
 
+## 12. O overlay e a persistência das mudanças
+
+- O overlay de `/system` (`/mnt/scratch/overlay/*/upper`) mora no `userdata` (dispositivo `scratch`). Reset de
+  fábrica ou formatação do `userdata` o apagam. `scripts/phase1/` refaz e confere a fase 1.
+- O overlay tem 10 arquivos: 7 em `system` (nossos), 2 em `vendor` e 1 em `product`. Os 3 de
+  `vendor`/`product` são de **18/04/2026**, do mesmo minuto da instalação remota de apps pelo fabricante
+  (`/data/local/install/script.log`), então vieram da personalização remota e não são mudanças desta fase.
+- O `vendor/build.prop` tem `persist.sys.jm.url=http://jm.ttyunos.com`, que ainda não está no bloqueio de
+  `hosts`. Não foi alterado: é uma observação a investigar antes de qualquer mudança.
+- Gravar na partição `super` continua pendente. O desenho do aparelho (Virtual A/B, ext4, `vbmeta` com
+  `HASHTREE_DISABLED`, `system_a` com ~3,8 MB livres) está descrito no relatório da análise.
+
 ## 11. O que ainda não foi feito
 
 - Gravar as mudanças de `/system` na partição `super` (exige UART como rede de segurança).
