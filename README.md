@@ -25,7 +25,7 @@ tela 800×480, ~1 GB de RAM). Feito para controle remoto (D-pad).
 ## Compilar
 
 ```bash
-./build.sh          # gera build/hyhome.apk
+./build.sh          # gera build/hyhome.apk (launcher); ./build.sh phone gera o app do celular
 ```
 
 O script usa `aapt2`, `javac`, `d8` e `apksigner`, sem Gradle. Na primeira vez cria um keystore de
@@ -83,6 +83,38 @@ python tools/remote/hy300_remote.py 192.168.0.15:5555
 - "Espelhar" usa o [scrcpy](https://github.com/Genymobile/scrcpy), opcional e instalado à parte.
 - Segurança: o ADB sobre Wi-Fi dá controle total. Mantenha `ro.adb.secure=1` e use só em rede confiável.
 
+## HY Remote: controle pelo celular (Android)
+
+App em `phone/` que controla o projetor pelo Wi-Fi, sem cabo e **sem instalar nada no projetor**.
+Ele fala o protocolo ADB direto com o `adbd` do projetor (porta 5555), com a mesma autenticação RSA
+do `adb` do PC. Nenhum serviço novo escuta no projetor.
+
+```bash
+./build.sh phone        # gera build/hyremote.apk (29 KB, Android 8.0 ou mais novo)
+```
+
+1. Passe o APK para o celular e instale (permita "fontes desconhecidas" para o app que o abrir).
+2. Celular e projetor na mesma rede Wi-Fi. A depuração por Wi-Fi do projetor (ADB, porta 5555) precisa
+   estar ligada.
+3. Abra o HY Remote, informe o IP do projetor e toque em **Conectar**.
+4. Na primeira vez o projetor mostra "Permitir depuração USB?". Marque **Sempre permitir** e confirme.
+   Se o pedido não aparecer, use o menu **⋯ > Ver minha chave ADB** e acrescente a linha a
+   `/data/misc/adb/adb_keys` pelo `adb` do PC (como root).
+
+Tem D-pad com repetição ao segurar, voltar/início/menu, volume e mudo, atalhos de apps, digitar texto
+(só ASCII), RAM e temperatura. Os botões de volume do celular controlam o volume do projetor.
+Para o projetor não mudar de IP, reserve o endereço no roteador.
+
+Segurança: quem tiver o celular desbloqueado com o app controla o projetor, e a chave privada fica no
+armazenamento privado do app. Revogue em *Opções do desenvolvedor > Revogar autorizações de
+depuração USB* no projetor.
+
+Teste do protocolo no PC (usa a chave do `adb` do PC, sem pedir autorização nova):
+
+```bash
+phone/test/run.sh 192.168.0.15:5555
+```
+
 ## Estrutura
 
 ```
@@ -93,6 +125,7 @@ src/com/paulo/hyhome/     MainActivity (tela), AppStore (lista), Shortcuts (atal
 build.sh                  compilação sem Gradle
 scripts/install.sh        instalação e rollback via ADB
 tools/remote/             controle remoto do projetor pelo PC (Python/tkinter)
+phone/                    app HY Remote para o celular (cliente ADB) e teste de protocolo
 docs/                     guia de engenharia reversa do HY300-T
 ```
 
