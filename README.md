@@ -133,6 +133,12 @@ o HY300-T, se um arquivo não tiver o SHA-256 do original (firmware diferente) o
 Ele **não** reaplica os arquivos de `vendor`/`product` do overlay, que são de 18/04/2026 e vieram da
 personalização remota do fabricante.
 
+## Documentação
+
+- [Guia de engenharia reversa](docs/GUIA-ENGENHARIA-REVERSA.md): como analisar e melhorar o seu próprio
+  projetor Android, do acesso por ADB ao launcher, com os cuidados e o que não fazer.
+- [Relatório de engenharia reversa](docs/ENGENHARIA-REVERSA.md): o que encontramos no HY300-T.
+
 ## Estrutura
 
 ```
@@ -145,7 +151,7 @@ scripts/install.sh        instalação e rollback via ADB
 scripts/phase1/           reaplicar e verificar a fase 1 (reapply, verify, selftest)
 tools/remote/             controle remoto do projetor pelo PC (Python/tkinter)
 phone/                    app HY Remote para o celular (cliente ADB) e teste de protocolo
-docs/                     guia de engenharia reversa do HY300-T
+docs/                     relatório (resultados) e guia (passo a passo) de engenharia reversa
 ```
 
 ## Limites conhecidos

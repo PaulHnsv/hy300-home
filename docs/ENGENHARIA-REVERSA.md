@@ -1,4 +1,7 @@
-# HY300-T: guia de engenharia reversa
+# HY300-T: relatório de engenharia reversa
+
+> Este arquivo reúne os **resultados** da análise do nosso aparelho. Para o **passo a passo** e como repetir
+> no seu projetor, veja o [guia](GUIA-ENGENHARIA-REVERSA.md).
 
 Como o aparelho foi analisado, o que foi encontrado e o que foi (ou não) alterado.
 Tudo abaixo foi observado em **uma unidade** com Android 13, build `userdebug` assinado com
