@@ -156,8 +156,9 @@ docs/                     relatório (resultados) e guia (passo a passo) de enge
 
 ## Limites conhecidos
 
-- O atalho **Keystone** só abre o app `com.softwinner.tcorrection`. Escrever os cantos direto em
-  `persist.vendor.hwc.keystone` não teve efeito observável no compositor (ver o guia, seção 6).
+- O atalho **Keystone** só abre o app `com.softwinner.tcorrection`. O app só grava a propriedade
+  `persist.vendor.hwc.keystone` e o compositor a lê (análise com JADX, ver o relatório, seção 6), mas
+  ainda não sabemos *quando* ele relê, então não há tela própria de ajuste.
 - A temperatura é lida de `/sys/class/thermal/thermal_zone0/temp`. Se o caminho não existir em
   outro firmware, o valor simplesmente não aparece.
 - As mudanças feitas em `/system` descritas no guia ficam no overlay do aparelho e **não** estão

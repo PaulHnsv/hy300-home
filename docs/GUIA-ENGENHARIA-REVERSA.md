@@ -179,7 +179,10 @@ O que observar:
   `libjmkeystone_jni.so` e `libkeystonecorrection.so`).
 
 Resultado do nosso caso: a cadeia do keystone (acelerômetro, app, propriedades, compositor) está descrita
-no guia de resultados. O que **não** descobrimos é como o app avisa o compositor para recarregar.
+no guia de resultados. Com o JADX vimos que o app **só grava uma propriedade** e o compositor a lê. O que
+**ainda não** sabemos é *quando* o compositor relê. Cuidado: uma propriedade com `debug` no nome pode ser
+escrita pelo próprio app, e não pelo componente que você quer observar. Confirme **quem escreve** antes de
+usá-la como prova.
 
 ## 9. Fase 6: mudanças reversíveis
 

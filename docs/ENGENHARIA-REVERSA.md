@@ -99,13 +99,34 @@ SC7A20 (acelerômetro)
 - O keystone é **100% digital**: cada grau de correção custa resolução efetiva no painel 800×480.
   A melhor correção é física (calçar o projetor).
 - `persist.sys.auto.trapezoid=true` faz o `tcorrection` recalcular os cantos pelo acelerômetro.
-- **Teste de escrita direta:** com o auto desligado, gravei outros cantos em
-  `persist.vendor.hwc.keystone` e li `persist.vendor.hwc.keystone.debug` depois de 3 s. Nenhuma
-  mudança observável. Não consegui ver a imagem projetada, então isso **não prova** que o
-  compositor ignora a propriedade; só que não vi reação. *Em aberto:* como o `tcorrection` avisa o
-  compositor (broadcast, binder, outra propriedade).
+- **Como o app avisa o compositor (análise do `TCorrectionJM.apk` com JADX 1.5.6, 2.470 classes):**
+  o app **só grava propriedades**. Em `SetTrapezoid.setzoomrotate`/`setzoomrotate_DB` ele calcula os 4
+  cantos (espaço 1920×1080) e faz `SystemProperties.set("persist.vendor.hwc.keystone", "x0,y0,…,x3,y3")`.
+  Não há binder, broadcast, `SurfaceFlinger` nem `SystemControlManager` no caminho do keystone. O caminho
+  manual é `setKeyStoneParame` (grava `persist.cus.keystone.{lb,lt,rb,rt}{x,y}` e os `persist.keystone.*`)
+  seguido do mesmo recálculo. O caminho automático é `ProjectorService.onSensorChanged` com `persist.sys.auto.trapezoid`.
+- **O lado do compositor (`hwcomposer.amlogic.so` e `libkeystonecorrection.so`):** o `hwcomposer` contém a
+  string `persist.vendor.hwc.keystone`, `Hwc2Display::setKeystoneCorrection(std::string)` e
+  `VdinPostProcessor::setKeystoneConfigs`; a `libkeystonecorrection` (`KeystoneProcessor::updateProcess`,
+  `calPerspecMatrix`) também lê a propriedade. `dumpsys SurfaceFlinger` mostra `mKeyStoneMode:1`.
+  Há ainda um serviço HIDL `vendor.amlogic.display.meson_display_ipc@1.0::IMesonDisplayIPC` no composer com
+  `send_msg(string)`, mas o único cliente é o `systemcontrol` e ele não cita keystone. **Inferência:** o
+  compositor lê a propriedade por conta própria, e é esse o aviso.
+- **Correção de uma conclusão anterior:** `persist.vendor.hwc.keystone.debug` é **gravada pelo próprio app**
+  (os mesmos números em outra ordem), não pelo compositor. Por isso o teste em que gravei outros cantos e li
+  essa propriedade **não mede reação do compositor**: o resultado é inconclusivo, não negativo.
+- **Ainda não sabemos** *quando* o compositor relê (a cada frame, ao mudar de modo ou por mudança de valor).
+  Isso exigiria desmontar a função que usa a string (precisa de um disassembler) ou olhar a imagem projetada.
+  Um teste visual é simples: com `persist.sys.auto.trapezoid=false`, grave cantos bem diferentes e veja se a
+  imagem muda; depois **restaure o valor original, lido antes**.
 - Cuidado ao testar: leia e guarde o valor atual antes de gravar. Os valores mudam com a
   inclinação, e um valor de relatório antigo já estava desatualizado.
+
+- **Telemetria do `tcorrection`:** `HttpReporter` envia `emmcid` (ID do eMMC) e `mac` por **HTTP** para
+  `http://txy.jiumaoos.com/netflix/dataSave` (padrão; pode ser trocado por `persist.sys.ntf.jmurl`) e a
+  resposta ajusta `persist.sys.ntf.authorize`. Esse domínio já está no bloqueio do `hosts`. O app também usa
+  `vendor.jm.apk.install` e `vendor.jm.usb.upgrade`, que são os gatilhos de root do `preinstall.rc` que
+  desativamos.
 
 ## 7. Foco
 
