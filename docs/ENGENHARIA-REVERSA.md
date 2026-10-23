@@ -137,7 +137,25 @@ adb pull /system/etc/init ./init  # leia os .rc para achar gatilhos de boot
 Para analisar APKs: extraia o `classes.dex`, use `jadx` ou `dexdump`. O REA precisa de um JAR do
 JADX configurado (`REA_JADX_MCP_JAR`) para inspecionar APKs; sem ele, use as ferramentas acima.
 
-## 10. O que ainda não foi feito
+## 10. Bloqueio de anúncios na rede (DNS privado)
+
+Além do `hosts`, o DNS privado do Android (DNS sobre TLS) cobre todo o sistema:
+
+```bash
+adb shell settings put global private_dns_specifier dns.adguard-dns.com
+adb shell settings put global private_dns_mode hostname
+# desfazer:
+adb shell settings put global private_dns_mode opportunistic
+```
+
+Validado: `dumpsys connectivity` mostra `UsePrivateDns: true` e `ValidatedPrivateDnsAddresses`.
+O provedor passa a ver os domínios consultados. O bloqueio é por domínio e não remove anúncios
+servidos pelo mesmo domínio do conteúdo (por exemplo, dentro do app do YouTube).
+
+**Brave no Android não aceita extensões.** O bloqueio dele é embutido (Shields). Para YouTube sem
+anúncios em TV, o SmartTube resolve melhor que um navegador.
+
+## 11. O que ainda não foi feito
 
 - Gravar as mudanças de `/system` na partição `super` (exige UART como rede de segurança).
 - Descobrir como o `tcorrection` recarrega o keystone no compositor.

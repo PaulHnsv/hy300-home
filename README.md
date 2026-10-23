@@ -60,6 +60,22 @@ HY Home. Sem FLauncher, ajuste o HOME manualmente depois.
 | Voltar ao topo | Tecla HOME |
 | Mostrar ocultos | Botão "Mostrar ocultos (N)" no fim da lista |
 
+## Controle remoto pelo PC (sem cabo)
+
+`tools/remote/hy300_remote.py` é um controle com D-pad, volume, atalhos de apps, digitar texto,
+captura de tela e status (RAM e temperatura). Só precisa de Python 3 (com tkinter) e do `adb`.
+
+```bash
+python tools/remote/hy300_remote.py 192.168.0.15:5555
+```
+
+- Teclado: setas, Enter (OK), Esc/Backspace (voltar), Home, PageUp/PageDown (volume), Espaço (play).
+- O PC precisa estar autorizado no ADB do projetor (aceite a chave uma vez, ou use `adb connect`).
+- "Espelhar" usa o [scrcpy](https://github.com/Genymobile/scrcpy), opcional: instale-o à parte e
+  ele aparece no PATH.
+- "Digitar texto" aceita só ASCII, limite do `input text` do Android.
+- Segurança: o ADB sobre Wi-Fi dá controle total. Mantenha `ro.adb.secure=1` e use só em rede confiável.
+
 ## Estrutura
 
 ```
@@ -69,6 +85,7 @@ src/com/paulo/hyhome/     MainActivity (tela), AppStore (lista), Shortcuts (atal
                           IconLoader, Prefs, Tile, Ui
 build.sh                  compilação sem Gradle
 scripts/install.sh        instalação e rollback via ADB
+tools/remote/             controle remoto do projetor pelo PC (Python/tkinter)
 docs/                     guia de engenharia reversa do HY300-T
 ```
 
