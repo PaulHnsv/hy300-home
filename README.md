@@ -81,5 +81,4 @@ docs/                     guia de engenharia reversa do HY300-T
 
 ## Licença
 
-Defina antes de publicar (por exemplo MIT). Enquanto não houver arquivo `LICENSE`, todos os
-direitos ficam reservados ao autor.
+MIT. Veja o arquivo [LICENSE](LICENSE).
